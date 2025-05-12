@@ -1,0 +1,44 @@
+
+body{
+    color: #FFF;
+}
+
+.navbar{
+    display: flex;
+    justify-content:space-between;
+    height: 72px;
+    align-items: center;
+    padding-right: 24px;
+    padding-left: 24px;
+    border-bottom: 1px solid #333333;
+    background: 	#0F172A;
+}
+
+.logo
+{
+    max-height: 40px;
+    margin-right: 80px;
+}
+
+.logo img {
+  max-height: 40px;
+  height: auto;
+  width: auto;
+}
+.links{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+}
+
+a{
+    text-decoration: none;
+    font-family: Inter;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 16px;
+    color: #FFFFFF;
+}
+
