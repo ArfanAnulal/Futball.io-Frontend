@@ -1,11 +1,212 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import "../css/Home.css"
+import axios from 'axios';
+
 const Home = () => {
+  // Store league ID mappings
+  const leagueIdMapping = {
+    'Premier League': 39,
+    'La Liga': 140,
+    'Serie A': 135
+  };
+  
+  const [selectedLeague, setSelectedLeague] = useState('Premier League');
+  const [matches, setMatches] = useState([]);
+  const [standings, setStandings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Common API headers
+  const headers = {
+    'x-rapidapi-key': 'bcd437fea9e79e81b6d7e4d3f1aa366b',
+    'x-rapidapi-host': 'v3.football.api-sports.io'
+  };
+
+  useEffect(() => {
+    // Using 2023 season for free plan compatibility
+    const season = 2023;
+    
+    // This runs when the selected league changes
+    const fetchMatchesForLeague = async () => {
+      setLoading(true);
+      
+      try {
+        // Get league ID for selected league
+        const leagueId = leagueIdMapping[selectedLeague];
+        
+        // Fetch fixtures (matches) for today's date
+        const todayDate = getTodayDate();
+        
+        const fixturesConfig = {
+          method: 'get',
+          url: `https://v3.football.api-sports.io/fixtures`,
+          headers,
+          params: {
+            league: leagueId,
+            season: season,
+            // date: todayDate,
+            timezone: 'Europe/London'
+          }
+        };
+
+        const fixturesResponse = await axios(fixturesConfig);
+        console.log('Fixtures response:', fixturesResponse.data);
+        setMatches(fixturesResponse.data.response || []);
+        
+        // Fetch standings for 2023 season
+        const standingsConfig = {
+          method: 'get',
+          url: `https://v3.football.api-sports.io/standings`,
+          headers,
+          params: {
+            league: leagueId,
+            season: season
+          }
+        };
+
+        const standingsResponse = await axios(standingsConfig);
+        console.log('Standings response:', standingsResponse.data);
+        
+        // API returns standings in a nested structure
+        if (standingsResponse.data.response[0]?.league?.standings[0]) {
+          setStandings(standingsResponse.data.response[0].league.standings[0]);
+        } else {
+          setStandings([]);
+        }
+        
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Failed to load data. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMatchesForLeague();
+  }, [selectedLeague]); // This runs when selected league changes
+  
+  // Format today's date for display
+  const formatTodayForDisplay = () => {
+    const today = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return today.toLocaleDateString(undefined, options);
+  };
+  
   return (
-    <div>
-      <div className='hero'>
-        <h1 className='hero-title'>⚽ Discover Football Facts Instantly</h1>
-      </div>
+    <div className='home'>
+      <section className='hero'>
+        <h1 className='hero-title'>Football Stats & Scores</h1>
+        <p className='hero-description'>Get match details and standings for major football leagues (2023 season).</p>
+      </section>
+
+      <section className='todays-matches'>
+        <h2 className='todays-matches-title'>Matches For 2023</h2>
+        <select 
+          name="leagues" 
+          onChange={(e) => setSelectedLeague(e.target.value)} 
+          value={selectedLeague}
+          className='league-select'
+        >
+          <option value="Premier League">Premier League</option>
+          <option value="La Liga">La Liga</option>
+          <option value="Serie A">Serie A</option>
+        </select>
+      </section>
+      
+      {loading ? (
+        <div className="loading">Loading...</div>
+      ) : error ? (
+        <div className="error">{error}</div>
+      ) : (
+        <>
+          <div className='matches-list'>
+            {matches.length > 0 ? (
+              matches.map((match) => (
+                <div className='match' key={match.fixture.id}>
+                  <div className='league'>{selectedLeague}</div>
+                  <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString()}, {new Date(match.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                  <div className='team-details'>
+                    <div className='team'>
+                      
+                      {match.teams.home.logo && <img src={match.teams.home.logo} alt={match.teams.home.name} className="team-logo" />}
+                      
+                    </div>
+                    <div className='score'>
+                      {match.goals.home !== null ? match.goals.home : '-'} - {match.goals.away !== null ? match.goals.away : '-'}
+                    </div>
+                    <div className='team'>
+
+                      {match.teams.away.logo && <img src={match.teams.away.logo} alt={match.teams.away.name} className="team-logo" />}
+                    </div>
+                  </div>
+                  <div className='match-status'>{match.fixture.status.long}</div>
+                </div>
+              ))
+            ) : (
+              <div className='no-matches'>No matches found for today in the 2023 season</div>
+            )}
+          </div>
+
+          <div className='standings'>
+            <h2 className='standings-title'>2023 Season Standings</h2>
+            <table className='standings-table'>
+              <thead>
+                <tr>
+                  <th>Pos</th>
+                  <th>Team</th>
+                  <th>P</th>
+                  <th>W</th>
+                  <th>D</th>
+                  <th>L</th>
+                  <th>GD</th>
+                  <th>Pts</th>
+                </tr>
+              </thead>
+              <tbody>
+                {standings.length > 0 ? (
+                  standings.map((team) => (
+                    <tr key={team.team.id}>
+                      <td>{team.rank}</td>
+                      <td>
+                        {team.team.logo && (
+                          <img 
+                            src={team.team.logo} 
+                            alt={team.team.name} 
+                            className="team-logo-small"
+                            width="20"
+                            height="20"
+                          />
+                        )}
+                        {team.team.name}
+                      </td>
+                      <td>{team.all.played}</td>
+                      <td>{team.all.win}</td>
+                      <td>{team.all.draw}</td>
+                      <td>{team.all.lose}</td>
+                      <td>{team.goalsDiff}</td>
+                      <td>{team.points}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8">No standings data available for 2023 season</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   )
 }

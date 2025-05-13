@@ -1,0 +1,47 @@
+body
+{
+     background-color: #0F172A;
+}
+
+.footer
+{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    /* background-color: #1E293B; */
+    gap: 10px;
+    padding: 20px;
+    margin-top: 1.5rem;
+    border-top: 1px solid #1E293B;
+}
+
+.Links
+{
+    display: flex;
+    gap: 20px;
+    font-size: 24 px;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+}
+
+.Links a {
+  color: #94A3B8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.Links a:hover,
+.Links a:focus {
+  color: #2563EB; /* or any accent color */
+}
+
+.footer-text
+{
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #94A3B8;
+}

@@ -3,24 +3,184 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 
 }
 
 body
 {
      background-color: #0F172A;
+     min-height: 100vh;
+}
+
+.home
+{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-left: 48px;
+    margin-top: 50px;
+    margin-right: 48px;
 }
 .hero
 {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
 }
 
 .hero-title
 {
     font-size: 36px;
+    font-family: 'Inter', sans-serif;
     font-weight: 700;
     line-height: 44px;
     letter-spacing: -0.5px;
-    color: #FFFFFF;
+    color: #49b1f8;
 }
+
+.hero-description
+{
+    font-size: 1.125rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.5px;
+    color: #94a3ab;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    
+}
+
+.todays-matches
+{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    gap: 10rem;
+    margin-top: 100px;
+    margin-right: 24px;
+}
+
+.todays-matches-title
+{
+    font-size: 1.5rem;
+
+}
+
+.league-select {
+    background-color: #1E293B;
+    border: 1px solid #334155;
+    color: #F8FAFC;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    align-self: flex-end;
+    /* margin-left: auto; */
+}
+
+
+.matches-list
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    margin-top: 24px;
+}
+
+.match
+{
+    background-color: #1E293B;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    min-width: 500px;
+        
+}
+
+.match:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.match-status
+{
+    display: flex;
+            align-items: center;
+            justify-content: center;
+}
+
+.league
+{
+    font-size: 0.875rem;
+            color: #94A3B8;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+}
+.team-details
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    margin-top: 24px;
+}
+
+.team
+{
+    font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+}
+
+.team-logo
+{
+    max-height: 70px;
+}
+
+.score
+{
+    display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+}
+
+.standings{
+    padding: 2rem 0;
+
+}
+
+.standings-title{
+    margin-bottom: 1.5rem;
+}
+
+.standings-table{
+    width: 100%;
+            border-collapse: collapse;
+            background-color: #1E293B;
+            border-radius: 0.75rem;
+            overflow: hidden;
+
+}
+
+ .standings-table th,
+        .standings-table td {
+            padding: 1rem;
+            text-align: left;
+        }
+
+    .standings-table th {
+            background-color: #334155;
+            font-weight: 500;
+            color: #94A3B8;
+        }
