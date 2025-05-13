@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import "../css/Home.css"
 import axios from 'axios';
 
+
 const Home = () => {
   // Store league ID mappings
   const leagueIdMapping = {
@@ -9,12 +10,14 @@ const Home = () => {
     'La Liga': 140,
     'Serie A': 135
   };
-  
   const [selectedLeague, setSelectedLeague] = useState('Premier League');
   const [matches, setMatches] = useState([]);
   const [standings, setStandings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
@@ -26,10 +29,10 @@ const Home = () => {
   };
 
   // Common API headers
-  const headers = {
-    'x-rapidapi-key': 'bcd437fea9e79e81b6d7e4d3f1aa366b',
-    'x-rapidapi-host': 'v3.football.api-sports.io'
-  };
+  // const headers = {
+  //   'x-rapidapi-key': API_BASE_URL,
+  //   'x-rapidapi-host': 'v3.football.api-sports.io'
+  // };
 
   useEffect(() => {
     // Using 2023 season for free plan compatibility
@@ -46,34 +49,46 @@ const Home = () => {
         // Fetch fixtures (matches) for today's date
         const todayDate = getTodayDate();
         
-        const fixturesConfig = {
-          method: 'get',
-          url: `https://v3.football.api-sports.io/fixtures`,
-          headers,
-          params: {
-            league: leagueId,
-            season: season,
-            // date: todayDate,
-            timezone: 'Europe/London'
-          }
-        };
+        // const fixturesConfig = {
+        //   method: 'get',
+        //   url: `https://v3.football.api-sports.io/fixtures`,
+        //   headers,
+        //   params: {
+        //     league: leagueId,
+        //     season: season,
+        //     // date: todayDate,
+        //     timezone: 'Europe/London'
+        //   }
+        // };
 
-        const fixturesResponse = await axios(fixturesConfig);
+        const fixturesResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
+  params: {
+    league: leagueId,
+    season: 2023,
+    timezone: 'Europe/London'
+  }
+});
         console.log('Fixtures response:', fixturesResponse.data);
         setMatches(fixturesResponse.data.response || []);
         
         // Fetch standings for 2023 season
-        const standingsConfig = {
-          method: 'get',
-          url: `https://v3.football.api-sports.io/standings`,
-          headers,
-          params: {
-            league: leagueId,
-            season: season
-          }
-        };
+        // const standingsConfig = {
+        //   method: 'get',
+        //   url: `https://v3.football.api-sports.io/standings`,
+        //   headers,
+        //   params: {
+        //     league: leagueId,
+        //     season: season
+        //   }
+        // };
 
-        const standingsResponse = await axios(standingsConfig);
+        const standingsResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
+  params: {
+    league: leagueId,
+    season: 2023,
+    timezone: 'Europe/London'
+  }
+});
         console.log('Standings response:', standingsResponse.data);
         
         // API returns standings in a nested structure
