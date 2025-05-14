@@ -9,27 +9,44 @@ const Home = () => {
     'La Liga': 140,
     'Serie A': 135
   };
-  const [selectedLeague, setSelectedLeague] = useState('Premier League');
-  const [matches, setMatches] = useState([]);
-  const [standings, setStandings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const standingsRef = useRef(null);
+
+  // State variables
+  const [selectedLeague, setSelectedLeague] = useState('Premier League'); //Set default selection as Premier League
+  const [matches, setMatches] = useState([]); //API response for matches
+  const [standings, setStandings] = useState([]); //API response for standings
+  const [loading, setLoading] = useState(true); //Loading state
+  const [error, setError] = useState(null); //Error state
+  const [isAtStandings, setIsAtStandings] = useState(false); // Track if user is viewing standings
+  const standingsRef = useRef(null); // Ref for standings section
+  const matchesRef = useRef(null); // Ref for matches section
 
   const scrollToStandings = () => {
-  standingsRef.current?.scrollIntoView({ behavior: 'smooth' });
-};
+    standingsRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToMatches = () => {
+    matchesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const searchTerm = localStorage.getItem('searchTerm') || '2023';
 
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
+  // Track scroll position to update button text and functionality
+  useEffect(() => {
+    const handleScroll = () => {
+      if (standingsRef.current) {
+        const standingsPosition = standingsRef.current.getBoundingClientRect().top;
+        // If standings section is visible in viewport (with some buffer)
+        setIsAtStandings(standingsPosition < window.innerHeight / 2);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const season = searchTerm;
@@ -86,7 +103,7 @@ const Home = () => {
         <p className='hero-description'>Get match details and standings for major football leagues (2021 to 2024 season).</p>
       </section>
 
-      <section className='todays-matches'>
+      <section className='todays-matches' ref={matchesRef}>
         <h2 className='todays-matches-title'>Matches For {searchTerm} - {Number(searchTerm)+1} </h2>
         <select 
           name="leagues" 
@@ -189,9 +206,12 @@ const Home = () => {
           </div>
         </>
       )}
-      <button className='scroll-down-btn-floating' onClick={scrollToStandings}>
-  ↓ View Standings
-</button>
+      <button 
+        className='scroll-down-btn-floating' 
+        onClick={isAtStandings ? scrollToMatches : scrollToStandings}
+      >
+        {isAtStandings ? '↑ View Matches' : '↓ View Standings'}
+      </button>
     </div>
   )
 }
