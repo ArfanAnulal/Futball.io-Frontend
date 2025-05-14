@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import "../css/Home.css"
 import axios from 'axios';
 
@@ -31,14 +31,7 @@ const Home = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Common API headers
-  // const headers = {
-  //   'x-rapidapi-key': API_BASE_URL,
-  //   'x-rapidapi-host': 'v3.football.api-sports.io'
-  // };
-
   useEffect(() => {
-    // Using 2023 season for free plan
     const season = searchTerm;
     
     // This runs when the selected league changes
@@ -48,21 +41,6 @@ const Home = () => {
       try {
         // Get league ID for selected league
         const leagueId = leagueIdMapping[selectedLeague];
-        
-        // Fetch fixtures (matches) for today's date
-        const todayDate = getTodayDate();
-        
-        // const fixturesConfig = {
-        //   method: 'get',
-        //   url: `https://v3.football.api-sports.io/fixtures`,
-        //   headers,
-        //   params: {
-        //     league: leagueId,
-        //     season: season,
-        //     // date: todayDate,
-        //     timezone: 'Europe/London'
-        //   }
-        // };
 
         const fixturesResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
   params: {
@@ -73,23 +51,11 @@ const Home = () => {
 });
         console.log('Fixtures response:', fixturesResponse.data);
         setMatches(fixturesResponse.data.response || []);
-        
-        // Fetch standings for 2023 season
-        // const standingsConfig = {
-        //   method: 'get',
-        //   url: `https://v3.football.api-sports.io/standings`,
-        //   headers,
-        //   params: {
-        //     league: leagueId,
-        //     season: season
-        //   }
-        // };
 
         const standingsResponse = await axios.get(`${API_BASE_URL}/standings`, {
   params: {
     league: leagueId,
     season: season,
-    // timezone: 'Europe/London'
   }
 });
         console.log('Standings response:', standingsResponse.data);
@@ -112,13 +78,6 @@ const Home = () => {
 
     fetchMatchesForLeague();
   }, [selectedLeague]); // This runs when selected league changes
-  
-  // Format today's date for display
-  const formatTodayForDisplay = () => {
-    const today = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return today.toLocaleDateString(undefined, options);
-  };
   
   return (
     <div className='home'>

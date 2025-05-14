@@ -172,7 +172,7 @@ body {
     color: #F8FAFC;
 }
 
-/* Media queries for responsive design */
+
 @media (max-width: 670px) {
     .home {
         margin-left: 16px;
@@ -199,7 +199,7 @@ body {
     
     .league-select {
         align-self: stretch;
-        width: 150px;
+        width: 170px;
     }
     
     .matches-list {
@@ -224,10 +224,5 @@ body {
     .standings-table td {
         padding: 0.5rem;
         font-size: 0.75rem;
-    }
-    
-    /* Optional: Hide less important columns on mobile */
-    .standings-table .optional-column {
-        display: none;
     }
 }

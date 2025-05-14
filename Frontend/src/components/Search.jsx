@@ -1,8 +1,6 @@
-import React, { forwardRef } from 'react'
 import "../css/Search.css"
 import { Search as SearchIcon} from 'lucide-react'
 import { useState } from 'react';
-import { useEffect } from 'react';
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
 

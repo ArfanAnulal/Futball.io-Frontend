@@ -49,23 +49,22 @@ a {
 }
 
 .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
         
-        .logo span {
-            color: #38BDF8;
-        }
+.logo span {
+    color: #38BDF8;
+}
 
 @media (max-width: 720px)
 {
     .navbar {
         display: flex;
         flex-direction: row;
-        /* gap: 240px; */
     }
 
     .navbar-center {
@@ -116,11 +115,11 @@ a {
 @media (max-width: 480px)
 {
    .navbar-center {
-  position: absolute;
-  left: 70%;
-  transform: translateX(-50%);
-  z-index: 0;
-  margin-right: 24px;
+        position: absolute;
+        left: 70%;
+        transform: translateX(-50%);
+        z-index: 0;
+        margin-right: 24px;
 }
 }
 
