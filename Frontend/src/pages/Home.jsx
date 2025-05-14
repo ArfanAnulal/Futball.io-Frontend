@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import "../css/Home.css"
 import axios from 'axios';
 
-
 const Home = () => {
   // Store league ID mappings
   const leagueIdMapping = {
@@ -17,8 +16,8 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const searchTerm = localStorage.getItem('searchTerm') || '2023';
 
-  
   // Get today's date in YYYY-MM-DD format
   const getTodayDate = () => {
     const today = new Date();
@@ -35,8 +34,8 @@ const Home = () => {
   // };
 
   useEffect(() => {
-    // Using 2023 season for free plan compatibility
-    const season = 2023;
+    // Using 2023 season for free plan
+    const season = searchTerm;
     
     // This runs when the selected league changes
     const fetchMatchesForLeague = async () => {
@@ -64,7 +63,7 @@ const Home = () => {
         const fixturesResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
   params: {
     league: leagueId,
-    season: 2023,
+    season: season,
     timezone: 'Europe/London'
   }
 });
@@ -82,11 +81,11 @@ const Home = () => {
         //   }
         // };
 
-        const standingsResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
+        const standingsResponse = await axios.get(`${API_BASE_URL}/standings`, {
   params: {
     league: leagueId,
-    season: 2023,
-    timezone: 'Europe/London'
+    season: season,
+    // timezone: 'Europe/London'
   }
 });
         console.log('Standings response:', standingsResponse.data);
@@ -121,11 +120,11 @@ const Home = () => {
     <div className='home'>
       <section className='hero'>
         <h1 className='hero-title'>Football Stats & Scores</h1>
-        <p className='hero-description'>Get match details and standings for major football leagues (2023 season).</p>
+        <p className='hero-description'>Get match details and standings for major football leagues (2021 to 2024 season).</p>
       </section>
 
       <section className='todays-matches'>
-        <h2 className='todays-matches-title'>Matches For 2023</h2>
+        <h2 className='todays-matches-title'>Matches For {searchTerm} - {Number(searchTerm)+1} </h2>
         <select 
           name="leagues" 
           onChange={(e) => setSelectedLeague(e.target.value)} 
@@ -149,7 +148,9 @@ const Home = () => {
               matches.map((match) => (
                 <div className='match' key={match.fixture.id}>
                   <div className='league'>{selectedLeague}</div>
-                  <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString()}, {new Date(match.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                  <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString('en-GB',{day: 'numeric',
+                   month: 'short', // or 'long' for full month name
+                   year: 'numeric'})}, {new Date(match.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                   <div className='team-details'>
                     <div className='team'>
                       
@@ -168,12 +169,12 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className='no-matches'>No matches found for today in the 2023 season</div>
+              <div className='no-matches'>No matches found for today in the {searchTerm} season</div>
             )}
           </div>
 
           <div className='standings'>
-            <h2 className='standings-title'>2023 Season Standings</h2>
+            <h2 className='standings-title'>{searchTerm} - {Number(searchTerm)+1}  Season Standings</h2>
             <table className='standings-table'>
               <thead>
                 <tr>
@@ -192,17 +193,20 @@ const Home = () => {
                   standings.map((team) => (
                     <tr key={team.team.id}>
                       <td>{team.rank}</td>
-                      <td>
+                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}}>
                         {team.team.logo && (
                           <img 
                             src={team.team.logo} 
                             alt={team.team.name} 
                             className="team-logo-small"
-                            width="20"
-                            height="20"
+                            width="25"
+                            height="25"
                           />
                         )}
+                        {/* &nbsp;&nbsp; */}
+                        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                         {team.team.name}
+                        </div>
                       </td>
                       <td>{team.all.played}</td>
                       <td>{team.all.win}</td>
@@ -214,7 +218,7 @@ const Home = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8">No standings data available for 2023 season</td>
+                    <td colSpan="8">No standings data available for {searchTerm} season</td>
                   </tr>
                 )}
               </tbody>
