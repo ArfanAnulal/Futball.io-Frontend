@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import "../css/Home.css"
 import axios from 'axios';
-
 
 const Home = () => {
   // Store league ID mappings
@@ -10,33 +9,47 @@ const Home = () => {
     'La Liga': 140,
     'Serie A': 135
   };
-  const [selectedLeague, setSelectedLeague] = useState('Premier League');
-  const [matches, setMatches] = useState([]);
-  const [standings, setStandings] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  // State variables
+  const [selectedLeague, setSelectedLeague] = useState('Premier League'); //Set default selection as Premier League
+  const [matches, setMatches] = useState([]); //API response for matches
+  const [standings, setStandings] = useState([]); //API response for standings
+  const [loading, setLoading] = useState(true); //Loading state
+  const [error, setError] = useState(null); //Error state
+  const [isAtStandings, setIsAtStandings] = useState(false); // Track if user is viewing standings
+  const standingsRef = useRef(null); // Ref for standings section
+  const matchesRef = useRef(null); // Ref for matches section
 
-  
-  // Get today's date in YYYY-MM-DD format
-  const getTodayDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  const scrollToStandings = () => {
+    standingsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Common API headers
-  // const headers = {
-  //   'x-rapidapi-key': API_BASE_URL,
-  //   'x-rapidapi-host': 'v3.football.api-sports.io'
-  // };
+  const scrollToMatches = () => {
+    matchesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+  
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+  const searchTerm = localStorage.getItem('searchTerm') || '2023';
+
+  // Track scroll position to update button text and functionality
+  useEffect(() => {
+    const handleScroll = () => {
+      if (standingsRef.current) {
+        const standingsPosition = standingsRef.current.getBoundingClientRect().top;
+        // If standings section is visible in viewport (with some buffer)
+        setIsAtStandings(standingsPosition < window.innerHeight / 2);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
-    // Using 2023 season for free plan compatibility
-    const season = 2023;
+    const season = searchTerm;
     
     // This runs when the selected league changes
     const fetchMatchesForLeague = async () => {
@@ -45,48 +58,21 @@ const Home = () => {
       try {
         // Get league ID for selected league
         const leagueId = leagueIdMapping[selectedLeague];
-        
-        // Fetch fixtures (matches) for today's date
-        const todayDate = getTodayDate();
-        
-        // const fixturesConfig = {
-        //   method: 'get',
-        //   url: `https://v3.football.api-sports.io/fixtures`,
-        //   headers,
-        //   params: {
-        //     league: leagueId,
-        //     season: season,
-        //     // date: todayDate,
-        //     timezone: 'Europe/London'
-        //   }
-        // };
 
         const fixturesResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
   params: {
     league: leagueId,
-    season: 2023,
+    season: season,
     timezone: 'Europe/London'
   }
 });
         console.log('Fixtures response:', fixturesResponse.data);
         setMatches(fixturesResponse.data.response || []);
-        
-        // Fetch standings for 2023 season
-        // const standingsConfig = {
-        //   method: 'get',
-        //   url: `https://v3.football.api-sports.io/standings`,
-        //   headers,
-        //   params: {
-        //     league: leagueId,
-        //     season: season
-        //   }
-        // };
 
-        const standingsResponse = await axios.get(`${API_BASE_URL}/fixtures`, {
+        const standingsResponse = await axios.get(`${API_BASE_URL}/standings`, {
   params: {
     league: leagueId,
-    season: 2023,
-    timezone: 'Europe/London'
+    season: season,
   }
 });
         console.log('Standings response:', standingsResponse.data);
@@ -110,22 +96,15 @@ const Home = () => {
     fetchMatchesForLeague();
   }, [selectedLeague]); // This runs when selected league changes
   
-  // Format today's date for display
-  const formatTodayForDisplay = () => {
-    const today = new Date();
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return today.toLocaleDateString(undefined, options);
-  };
-  
   return (
     <div className='home'>
       <section className='hero'>
         <h1 className='hero-title'>Football Stats & Scores</h1>
-        <p className='hero-description'>Get match details and standings for major football leagues (2023 season).</p>
+        <p className='hero-description'>Get match details and standings for major football leagues (2021 to 2024 season).</p>
       </section>
 
-      <section className='todays-matches'>
-        <h2 className='todays-matches-title'>Matches For 2023</h2>
+      <section className='todays-matches' ref={matchesRef}>
+        <h2 className='todays-matches-title'>Matches For {searchTerm} - {Number(searchTerm)+1} </h2>
         <select 
           name="leagues" 
           onChange={(e) => setSelectedLeague(e.target.value)} 
@@ -146,10 +125,12 @@ const Home = () => {
         <>
           <div className='matches-list'>
             {matches.length > 0 ? (
-              matches.map((match) => (
+              matches.slice().reverse().map((match) => (
                 <div className='match' key={match.fixture.id}>
                   <div className='league'>{selectedLeague}</div>
-                  <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString()}, {new Date(match.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+                  <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString('en-GB',{day: 'numeric',
+                   month: 'short', // or 'long' for full month name
+                   year: 'numeric'})}, {new Date(match.fixture.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
                   <div className='team-details'>
                     <div className='team'>
                       
@@ -168,12 +149,12 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className='no-matches'>No matches found for today in the 2023 season</div>
+              <div className='no-matches'>No matches found for today in the {searchTerm} season</div>
             )}
           </div>
 
-          <div className='standings'>
-            <h2 className='standings-title'>2023 Season Standings</h2>
+          <div className='standings' ref={standingsRef}>
+            <h2 className='standings-title'>{searchTerm} - {Number(searchTerm)+1}  Season Standings</h2>
             <table className='standings-table'>
               <thead>
                 <tr>
@@ -192,17 +173,20 @@ const Home = () => {
                   standings.map((team) => (
                     <tr key={team.team.id}>
                       <td>{team.rank}</td>
-                      <td>
+                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}}>
                         {team.team.logo && (
                           <img 
                             src={team.team.logo} 
                             alt={team.team.name} 
                             className="team-logo-small"
-                            width="20"
-                            height="20"
+                            width="25"
+                            height="25"
                           />
                         )}
+                        {/* &nbsp;&nbsp; */}
+                        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
                         {team.team.name}
+                        </div>
                       </td>
                       <td>{team.all.played}</td>
                       <td>{team.all.win}</td>
@@ -214,7 +198,7 @@ const Home = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8">No standings data available for 2023 season</td>
+                    <td colSpan="8">No standings data available for {searchTerm} season</td>
                   </tr>
                 )}
               </tbody>
@@ -222,6 +206,12 @@ const Home = () => {
           </div>
         </>
       )}
+      <button 
+        className='scroll-down-btn-floating' 
+        onClick={isAtStandings ? scrollToMatches : scrollToStandings}
+      >
+        {isAtStandings ? '↑ View Matches' : '↓ View Standings'}
+      </button>
     </div>
   )
 }
