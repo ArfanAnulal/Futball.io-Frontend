@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import "../css/Home.css"
 import axios from 'axios';
 
@@ -14,7 +14,11 @@ const Home = () => {
   const [standings, setStandings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const standingsRef = useRef(null);
 
+  const scrollToStandings = () => {
+  standingsRef.current?.scrollIntoView({ behavior: 'smooth' });
+};
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const searchTerm = localStorage.getItem('searchTerm') || '2023';
 
@@ -145,7 +149,7 @@ const Home = () => {
         <>
           <div className='matches-list'>
             {matches.length > 0 ? (
-              matches.map((match) => (
+              matches.slice().reverse().map((match) => (
                 <div className='match' key={match.fixture.id}>
                   <div className='league'>{selectedLeague}</div>
                   <div className='match-time'>{new Date(match.fixture.date).toLocaleDateString('en-GB',{day: 'numeric',
@@ -173,7 +177,7 @@ const Home = () => {
             )}
           </div>
 
-          <div className='standings'>
+          <div className='standings' ref={standingsRef}>
             <h2 className='standings-title'>{searchTerm} - {Number(searchTerm)+1}  Season Standings</h2>
             <table className='standings-table'>
               <thead>
@@ -226,6 +230,9 @@ const Home = () => {
           </div>
         </>
       )}
+      <button className='scroll-down-btn-floating' onClick={scrollToStandings}>
+  ↓ View Standings
+</button>
     </div>
   )
 }

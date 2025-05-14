@@ -48,3 +48,15 @@ a {
   line-height: 16px;
   color: #FFFFFF;
 }
+
+.logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .logo span {
+            color: #38BDF8;
+        }
