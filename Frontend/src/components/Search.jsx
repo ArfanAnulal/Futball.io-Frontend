@@ -12,7 +12,7 @@ const Search = () => {
   }
   return (
     <div className='search'>
-      <SearchIcon color='#2563EB'/>
+      <SearchIcon color='#2563EB' className='search-icon'/>
       <form className='search-form' onSubmit={setStorage}>
          <input type="text" placeholder="Get Started..." value={searchTerm} onChange={(e) => { setSearchTerm(e.target.value); console.log(e.target.value); }} />
       </form>

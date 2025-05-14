@@ -30,3 +30,17 @@
 .search:hover {
   background: #060910;
 }
+
+@media (max-width: 720px)
+{
+    .search {
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px)
+{
+    .search {
+        max-width: 200px;
+    }
+}
