@@ -2,7 +2,7 @@
 
 **futball.io** is a football data viewer app that allows users to explore match details and standings from popular European leagues. It uses the [API-Football](https://www.api-football.com/) service to fetch data for seasons between 2021 and 2024 (as supported by the free tier).
 
-The backend for this project handles API requests and is available separately. This is the frontend built with [Vite](https://vitejs.dev/) and [React](https://react.dev/).
+The backend for this project handles API requests and is available separately [here](https://github.com/ArfanAnulal/Futball.io-Backend). This is the frontend built with [Vite](https://vitejs.dev/) and [React](https://react.dev/).
 
 ## 📚 Table of Contents
 
