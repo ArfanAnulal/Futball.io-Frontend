@@ -7,7 +7,8 @@ const Search = () => {
   const [isFocused, setIsFocused] = useState(false);
 
   const setStorage = (e) => {
-    e.preventDefault(); // prevent page reload
+    // e.preventDefault(); // prevent page reload;
+    console.log(e.target.value);
     localStorage.setItem('searchTerm', searchTerm);
   };
 
@@ -22,7 +23,7 @@ const Search = () => {
             value={searchTerm}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setTimeout(() => setIsFocused(false), 100)} // delay blur to allow click
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {setSearchTerm(e.target.value); console.log(e.target.value); }}
           />
         </form>
       </div>
