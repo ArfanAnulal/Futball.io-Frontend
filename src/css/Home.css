@@ -8,15 +8,18 @@
 body {
     background-color: #0F172A;
     min-height: 100vh;
+    width: 100%;
 }
 
 .home {
     display: flex;
     flex-direction: column;
     height: 100%;
-    margin-left: 24px;
-    margin-top: 40px;
-    margin-right: 24px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 40px auto 0;
+    padding: 0 24px;
+    box-sizing: border-box;
 }
 
 .hero {
@@ -26,6 +29,7 @@ body {
     justify-content: center;
     gap: 16px;
     text-align: center;
+    width: 100%;
 }
 
 .hero-title {
@@ -48,6 +52,11 @@ body {
     margin: 0 auto 1.5rem;
 }
 
+.content-container {
+    width: 100%;
+    max-width: 1200px;
+}
+
 .todays-matches {
     display: flex;
     flex-direction: row;
@@ -56,6 +65,7 @@ body {
     margin-bottom: 1.5rem;
     gap: 1rem;
     margin-top: 60px;
+    width: 100%;
 }
 
 .todays-matches-title {
@@ -78,6 +88,7 @@ body {
     gap: 1rem;
     margin-bottom: 2rem;
     margin-top: 16px;
+    width: 100%;
 }
 
 .match {
@@ -121,11 +132,18 @@ body {
     font-weight: 500;
     text-align: center;
     color: #F8FAFC;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
 }
 
 .team-logo {
     max-height: 50px;
     max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 .score {
@@ -136,10 +154,12 @@ body {
     font-size: 1.25rem;
     font-weight: 700;
     color: #F8FAFC;
+    flex: 0 0 auto;
 }
 
 .standings {
     padding: 1.5rem 0;
+    width: 100%;
 }
 
 .standings-title {
@@ -148,18 +168,45 @@ body {
     font-size: 1.25rem;
 }
 
+.standings-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    background-color: #1E293B;
+    -webkit-overflow-scrolling: touch; /* Better scrolling on iOS */
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #4B5563 #1E293B; /* For Firefox */
+}
+
+.standings-table-container::-webkit-scrollbar {
+    height: 8px; /* Height of horizontal scrollbar */
+}
+
+.standings-table-container::-webkit-scrollbar-track {
+    background: #1E293B;
+    border-radius: 4px;
+}
+
+.standings-table-container::-webkit-scrollbar-thumb {
+    background-color: #4B5563;
+    border-radius: 4px;
+}
+
 .standings-table {
     width: 100%;
     border-collapse: collapse;
     background-color: #1E293B;
     border-radius: 0.75rem;
     overflow: hidden;
+    min-width: 100%;
+    table-layout: auto;
 }
 
 .standings-table th,
 .standings-table td {
     padding: 0.75rem;
     text-align: left;
+    white-space: nowrap;
 }
 
 .standings-table th {
@@ -193,10 +240,15 @@ body {
   transform: translateY(-2px);
 }
 
+@media (max-width: 768px) {
+    .matches-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
 @media (max-width: 670px) {
     .home {
-        margin-left: 16px;
-        margin-right: 16px;
+        padding: 0 16px;
         margin-top: 30px;
     }
     
@@ -219,7 +271,8 @@ body {
     
     .league-select {
         align-self: stretch;
-        width: 170px;
+        width: 100%;
+        max-width: 170px;
     }
     
     .matches-list {
@@ -257,6 +310,19 @@ body {
 
 /* Extra small devices */
 @media (max-width: 480px) {
+    .home {
+        padding: 0 12px;
+    }
+    
+    .standings-title,
+    .todays-matches-title {
+        font-size: 1.1rem;
+    }
+    
+    .match {
+        padding: 0.625rem;
+    }
+    
     .scroll-down-btn-floating {
         bottom: 12px;
         right: 12px;
@@ -264,5 +330,141 @@ body {
         font-size: 12px;
         /* Use smaller box shadow for less prominence */
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+}
+
+/* Very small devices (under 440px) */
+@media (max-width: 440px) {
+    .team {
+        width: 42%;
+        font-size: 0.75rem;
+    }
+    
+    .team-logo {
+        max-height: 36px;
+        max-width: 85%;
+    }
+    
+    .score {
+        font-size: 0.9rem;
+        padding: 0 0.4rem;
+    }
+    
+    .match {
+        padding: 0.5rem;
+    }
+    
+    .league {
+        font-size: 0.75rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    /* Better handle standings table on small screens */
+    .standings-table-container {
+        margin: 0 -12px; /* Negative margin to make the table wider than its container */
+        width: calc(100% + 24px); /* Compensate for the negative margins */
+        border-radius: 0; /* Remove border radius when it extends to the edges */
+    }
+    
+    /* Make table cells more compact */
+    .standings-table th,
+    .standings-table td {
+        padding: 0.35rem;
+        font-size: 0.65rem;
+    }
+    
+    /* Prioritize important columns and hide less important ones */
+    .standings-table .hide-on-mobile {
+        display: none;
+    }
+    
+    /* Make team column a bit wider than others */
+    .standings-table .team-column {
+        min-width: 80px; /* Ensure team names have enough space */
+    }
+    
+    /* Add some indication that the table is scrollable */
+    .standings-title::after {
+        content: " (scroll horizontally)";
+        font-size: 0.7rem;
+        color: #94A3B8;
+        font-weight: normal;
+        display: inline-block;
+        margin-left: 4px;
+    }
+    
+    .hero-title {
+        font-size: 20px;
+    }
+    
+    .hero-description {
+        font-size: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .todays-matches {
+        margin-top: 30px;
+        gap: 0.5rem;
+    }
+    
+    .todays-matches-title,
+    .standings-title {
+        font-size: 1rem;
+    }
+    
+    .league-select {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+}
+
+/* Ultra small devices */
+@media (max-width: 360px) {
+    .home {
+        padding: 0 8px;
+    }
+    
+    .team {
+        width: 42%;
+        font-size: 0.7rem;
+    }
+    
+    .team-logo {
+        max-height: 32px;
+        max-width: 80%;
+    }
+    
+    .score {
+        font-size: 0.8rem;
+        padding: 0 0.3rem;
+    }
+    
+    .league {
+        font-size: 0.7rem;
+    }
+    
+    .match {
+        padding: 0.4rem;
+    }
+    
+    .standings-table-container {
+        margin: 0 -8px;
+        width: calc(100% + 16px);
+    }
+    
+    .standings-table th,
+    .standings-table td {
+        padding: 0.3rem;
+        font-size: 0.6rem;
+    }
+}
+
+/* Alternative layout for very small screens */
+@media (max-width: 320px) {
+    /* Even more compact table */
+    .standings-table th,
+    .standings-table td {
+        padding: 0.25rem;
+        font-size: 0.55rem;
     }
 }

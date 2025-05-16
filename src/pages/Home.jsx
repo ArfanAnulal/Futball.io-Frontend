@@ -155,16 +155,16 @@ const Home = () => {
 
           <div className='standings' ref={standingsRef}>
             <h2 className='standings-title'>{searchTerm} - {Number(searchTerm)+1}  Season Standings</h2>
-            <table className='standings-table'>
+            <table class='standings-table'>
               <thead>
                 <tr>
                   <th>Pos</th>
-                  <th>Team</th>
+                  <th class="team-column">Team</th>
                   <th>P</th>
                   <th>W</th>
                   <th>D</th>
                   <th>L</th>
-                  <th>GD</th>
+                  <th class="hide-on-mobile">GD</th>
                   <th>Pts</th>
                 </tr>
               </thead>
@@ -173,7 +173,7 @@ const Home = () => {
                   standings.map((team) => (
                     <tr key={team.team.id}>
                       <td>{team.rank}</td>
-                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}}>
+                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}} className="team-column">
                         {team.team.logo && (
                           <img 
                             src={team.team.logo} 
@@ -192,7 +192,7 @@ const Home = () => {
                       <td>{team.all.win}</td>
                       <td>{team.all.draw}</td>
                       <td>{team.all.lose}</td>
-                      <td>{team.goalsDiff}</td>
+                      <td class="hide-on-mobile">{team.goalsDiff}</td>
                       <td>{team.points}</td>
                     </tr>
                   ))
