@@ -384,7 +384,7 @@ body {
     
     /* Add some indication that the table is scrollable */
     .standings-title::after {
-        content: " (scroll horizontally)";
+        /* content: " (scroll horizontally)"; */
         font-size: 0.7rem;
         color: #94A3B8;
         font-weight: normal;
