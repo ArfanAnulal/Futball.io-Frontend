@@ -149,7 +149,7 @@ const Home = () => {
                 </div>
               ))
             ) : (
-              <div className='no-matches'>No matches found for today in the {searchTerm} season</div>
+              <div className='no-matches'>No matches found for today in the {Number(searchTerm)+1} season</div>
             )}
           </div>
 
@@ -173,7 +173,7 @@ const Home = () => {
                   standings.map((team) => (
                     <tr key={team.team.id}>
                       <td>{team.rank}</td>
-                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}} className="team-column">
+                      <td style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px'}} class="team-column">
                         {team.team.logo && (
                           <img 
                             src={team.team.logo} 
@@ -184,7 +184,7 @@ const Home = () => {
                           />
                         )}
                         {/* &nbsp;&nbsp; */}
-                        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                        <div>
                         {team.team.name}
                         </div>
                       </td>
