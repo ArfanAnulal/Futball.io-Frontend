@@ -1,4 +1,3 @@
-
 .search {
   display: flex;
   align-items: center;
@@ -9,8 +8,8 @@
   max-width: 400px;
   margin: 0 auto;
   box-shadow: 0 0 5px #2563EB;
+  width: 100%; /* Ensure it takes full width up to max-width */
 }
-
 
 .search input {
   flex: 1;
@@ -20,7 +19,8 @@
   color: white;
   font-size: 16px;
   font-family: 'Inter', sans-serif;
-  padding-left: 20px; /* Padding to make space for icon */
+  padding-left: 16px; /* Adjusted padding */
+  width: 100%; /* Ensure input takes full width */
 }
 
 .search input::placeholder {
@@ -31,14 +31,24 @@
   background: #060910;
 }
 
-@media (max-width: 720px)
-{
-    .search {
-        max-width: 300px;
-    }
+.search-icon {
+  flex-shrink: 0; /* Prevent icon from shrinking */
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 720px) {
+  .search {
+    max-width: 300px;
+  }
 }
 
 @media (max-width: 480px) {
+  .search {
+    padding: 8px 14px;
+    max-width: 90%; /* Make it responsive to container width */
+  }
+  
   .search-icon {
     width: 16px;
     height: 16px;
@@ -47,5 +57,36 @@
   .search input {
     font-size: 14px;
     padding-left: 12px;
+  }
+}
+
+@media (max-width: 440px) {
+  .search {
+    padding: 6px 12px;
+    border-width: 1.5px; /* Slightly thinner border */
+    box-shadow: 0 0 4px #2563EB; /* Smaller shadow */
+  }
+  
+  .search input {
+    font-size: 13px;
+    padding-left: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .search {
+    padding: 5px 10px;
+    max-width: 95%;
+    margin: 0 auto;
+  }
+  
+  .search-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .search input {
+    font-size: 12px;
+    padding-left: 6px;
   }
 }
