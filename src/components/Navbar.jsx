@@ -9,7 +9,7 @@ const Navbar = () => {
     <Link to="/">
       <img src="logo.png" alt="Logo" />
     </Link>
-    <div class="logo">
+    <div className="logo">
                     futball<span>.io</span>
                 </div>
   </div>
